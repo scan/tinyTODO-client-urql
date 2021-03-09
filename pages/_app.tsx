@@ -5,6 +5,7 @@ import "core-js/es/array";
 import "core-js/es/object";
 
 import * as React from "react";
+import { Provider as URQLProvider } from "urql";
 
 import Head from "next/head";
 import type { AppProps } from "next/app";
@@ -13,6 +14,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
 import theme from "~/theme";
+import client from "~/client";
 
 const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
@@ -25,8 +27,10 @@ const App: React.FC<AppProps> = ({ Component, pageProps }) => {
         />
       </Head>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Component {...pageProps} />
+        <URQLProvider value={client}>
+          <CssBaseline />
+          <Component {...pageProps} />
+        </URQLProvider>
       </ThemeProvider>
     </>
   );
