@@ -39,16 +39,13 @@ const CreateItemFormDialog: React.FC<Props> = ({
   onSuccess,
 }) => {
   const { register, handleSubmit, errors } = useForm<FormData>();
-  const [submitting, setSubmitting] = useState(false);
-  const [_createItemResult, createItem] = useMutation<
+  const [createItemResult, createItem] = useMutation<
     CreateItemMutation,
     CreateItemMutationVariables
   >(CREATE_ITEM_MUTATION);
 
   const startCreate = useCallback(
     async (formData: FormData) => {
-      setSubmitting(true);
-
       const { data, error: apiError } = await createItem({
         ...formData,
       });
@@ -57,8 +54,6 @@ const CreateItemFormDialog: React.FC<Props> = ({
         console.error(apiError);
       }
 
-      setSubmitting(false);
-
       if (data) {
         if (onSuccess) {
           onSuccess();
@@ -66,7 +61,7 @@ const CreateItemFormDialog: React.FC<Props> = ({
         onClose();
       }
     },
-    [onClose, setSubmitting, onSuccess]
+    [onClose, onSuccess]
   );
 
   return (
@@ -115,11 +110,15 @@ const CreateItemFormDialog: React.FC<Props> = ({
             onClick={onClose}
             color="secondary"
             tabIndex={-1}
-            disabled={submitting}
+            disabled={createItemResult.fetching}
           >
             Cancel
           </Button>
-          <Button type="submit" color="primary" disabled={submitting}>
+          <Button
+            type="submit"
+            color="primary"
+            disabled={createItemResult.fetching}
+          >
             Create
           </Button>
         </DialogActions>
